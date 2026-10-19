@@ -1,0 +1,150 @@
+{
+  "uid": "conecta4",
+  "title": "Conecta 4",
+  "description": "Eventos del juego: partidas, jugadas, victorias y empates.",
+  "tags": ["conecta4"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "annotations": { "list": [] },
+  "templating": { "list": [] },
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "",
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "options": {
+        "mode": "markdown",
+        "content": "El juego escribe un evento por cada partida creada, partida iniciada, jugada, victoria, empate o jugada rechazada. Promtail lee ese archivo y lo entrega a Loki. Este tablero solo consulta Loki."
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Partidas creadas",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#38bdf8" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"partida_creada\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Partidas iniciadas",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#a78bfa" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"partida_iniciada\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Jugadas",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#f5c518" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"jugada\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Victorias",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#4ade80" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"victoria\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Empates",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#fb923c" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"empate\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Jugadas rechazadas",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 3 },
+      "options": { "colorMode": "value", "graphMode": "none", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
+      "fieldConfig": { "defaults": { "decimals": 0, "noValue": "0", "color": { "mode": "fixed", "fixedColor": "#fb7185" } }, "overrides": [] },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum(count_over_time({app=\"conecta4\", event=\"jugada_invalida\"}[$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 8,
+      "type": "bargauge",
+      "title": "Jugadas por columna",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 7 },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showUnfilled": true
+      },
+      "fieldConfig": { "defaults": { "decimals": 0, "color": { "mode": "fixed", "fixedColor": "#f5c518" } }, "overrides": [] },
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": { "regex": ".*columna=\"(\\d+)\".*", "renamePattern": "Columna $1" }
+        }
+      ],
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum by (columna) (count_over_time({app=\"conecta4\", event=\"jugada\"} | json [$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 9,
+      "type": "bargauge",
+      "title": "Victorias por color",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 7 },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "showUnfilled": true
+      },
+      "fieldConfig": { "defaults": { "decimals": 0, "color": { "mode": "palette-classic" } }, "overrides": [] },
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": { "regex": ".*color=\"([^\"]+)\".*", "renamePattern": "$1" }
+        }
+      ],
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "sum by (color) (count_over_time({app=\"conecta4\", event=\"victoria\"} | json [$__range]))", "queryType": "instant", "refId": "A" }]
+    },
+    {
+      "id": 10,
+      "type": "logs",
+      "title": "Eventos",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 15 },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": true,
+        "showCommonLabels": false,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [{ "datasource": { "type": "loki", "uid": "loki" }, "editorMode": "code", "expr": "{app=\"conecta4\"}", "queryType": "range", "refId": "A" }]
+    }
+  ]
+}

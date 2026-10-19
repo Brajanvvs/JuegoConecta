@@ -1,0 +1,67 @@
+# juego     la partida
+# promtail  lee el archivo de eventos y lo envía a Loki
+# loki      guarda esos eventos
+# grafana   los muestra
+
+name: conecta4
+
+services:
+  juego:
+    build: ./app
+    container_name: conecta4-juego
+    ports:
+      - "8080:8080"
+    environment:
+      SECRET_KEY: conecta4-examen
+      LOG_PATH: /var/log/conecta4/juego.log
+    volumes:
+      - logs-juego:/var/log/conecta4
+
+  promtail:
+    image: grafana/promtail:3.3.2
+    container_name: conecta4-promtail
+    user: "0:0"
+    command: ["-config.file=/etc/promtail/config.yml"]
+    volumes:
+      - ./observability/promtail-config.yaml:/etc/promtail/config.yml:ro
+      - logs-juego:/var/log/conecta4:ro
+      - promtail-posiciones:/tmp
+    depends_on:
+      - juego
+      - loki
+
+  loki:
+    image: grafana/loki:3.3.2
+    container_name: conecta4-loki
+    user: "0:0"
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./observability/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki-data:/loki
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    container_name: conecta4-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_USERS_DEFAULT_LANGUAGE: es-ES
+      GF_USERS_DEFAULT_THEME: dark
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/files/conecta4.json
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
+
+volumes:
+  logs-juego:
+  promtail-posiciones:
+  loki-data:
+  grafana-data:
